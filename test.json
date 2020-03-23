@@ -1,0 +1,21 @@
+[
+    {
+        "cmd_name": "#USER_REGISTER#",
+        "db_proc_name": "Entity.UserRegister",
+        "call_method": "ORMLESS",
+        "parameters": [
+            { "name" : "user_name", "type" : "string" }
+            ,{ "name" : "user_email", "type" : "string" }
+            ,{ "name" : "ext_id", "type" : "string" }
+            ,{ "name" : "oauth_service_name", "type" : "string" }
+        ]
+    }
+    ,{
+        "cmd_name": "entity.category_list",
+        "db_proc_name": "Entity.CategoryList",
+        "call_method": "GET",
+        "parameters": [
+            { "name" : "p", "type" : "int", "default" : "0" }
+        ]
+    }
+]
