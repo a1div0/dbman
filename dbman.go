@@ -161,16 +161,16 @@ func (db *DataBaseManager) ExecuteCommand(w http.ResponseWriter, r *http.Request
     } else if (cmd_descriptor.CallMethod == "ORMLESS") {
         return fmt.Errorf("Unplanned Ormless-method call!")
     } else {
-        return fmt.Errorf("Unknown call method!")
+        return fmt.Errorf("Unknown call method '%s'!", cmd_descriptor.CallMethod)
     }
 
-    // fmt.Println("cmd_name=", cmd_name)
-    // fmt.Println("call method:", cmd_descriptor.CallMethod)
-    // fmt.Println("parameters:")
-    // for k, v := range parameters_map {
-    //     fmt.Println("key=", k)
-    //     fmt.Println("val=", strings.Join(v, ""))
-    // }
+    fmt.Println("cmd_name= ", cmd_name)
+    fmt.Println("call method= ", cmd_descriptor.CallMethod)
+    fmt.Println("parameters:")
+    for k, v := range parameters_map {
+        fmt.Println("key=", k)
+        fmt.Println("val=", strings.Join(v, ""))
+    }
 
     cmd_arg, err = db.valid_and_prepare_command_arguments(cmd_descriptor, parameters_map)
     if err != nil {
