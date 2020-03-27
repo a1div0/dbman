@@ -156,6 +156,8 @@ func (db *DataBaseManager) ExecuteCommand(w http.ResponseWriter, r *http.Request
 
     if (cmd_descriptor.CallMethod == "GET") {
         parameters_map = r.Form
+    } else if (cmd_descriptor.CallMethod == "POST") {
+        parameters_map = r.Form
     } else if (cmd_descriptor.CallMethod == "ORMLESS") {
         return fmt.Errorf("Unplanned Ormless-method call!")
     } else {
