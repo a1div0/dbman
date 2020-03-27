@@ -162,7 +162,7 @@ func (db *DataBaseManager) ExecuteCommand(w http.ResponseWriter, r *http.Request
         parameters_map = r.Form
     } else if (cmd_descriptor.CallMethod == "POST") {
         //parameters_map = r.PostForm
-        parameters_map, err := parse_post_param(r)
+        parameters_map, err = parse_post_param(r)
         if err != nil {
             return err
         }
