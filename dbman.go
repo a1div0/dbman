@@ -10,6 +10,10 @@ import (
     "strings"
     "strconv"
     "reflect"
+    "io"
+	"io/ioutil"
+    "mime"
+	"mime/multipart"
     "encoding/json"
     "database/sql"
     "github.com/a1div0/oauth"
@@ -157,7 +161,11 @@ func (db *DataBaseManager) ExecuteCommand(w http.ResponseWriter, r *http.Request
     if (cmd_descriptor.CallMethod == "GET") {
         parameters_map = r.Form
     } else if (cmd_descriptor.CallMethod == "POST") {
-        parameters_map = r.PostForm
+        //parameters_map = r.PostForm
+        parameters_map, err := parse_post_param(r)
+        if err != nil {
+            return err
+        }
     } else if (cmd_descriptor.CallMethod == "ORMLESS") {
         return fmt.Errorf("Unplanned Ormless-method call!")
     } else {
@@ -193,6 +201,42 @@ func (db *DataBaseManager) ExecuteCommand(w http.ResponseWriter, r *http.Request
     fmt.Fprintf(w, string(b))
 
     return nil
+}
+
+func parse_post_param(r *http.Request) (map[string][]string, error) {
+
+    content_type := r.Header.Get("Content-Type")
+    media_type, params, err := mime.ParseMediaType(content_type)
+	if err != nil {
+		return nil, err
+	}
+
+    parameters_map := make(map[string][]string)
+
+    if strings.HasPrefix(media_type, "multipart/") {
+
+		mr := multipart.NewReader(r.Body, params["boundary"])
+
+		for {
+			p, err := mr.NextPart()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				return nil, err
+			}
+			slurp, err := ioutil.ReadAll(p)
+			if err != nil {
+				return nil, err
+			}
+            parameters_map[p.FormName()] = []string{ string(slurp) }
+		}
+
+	} else {
+        return nil, fmt.Errorf("Media-type '%s' not supported!", media_type)
+    }
+
+    return parameters_map, nil
 }
 
 func (db *DataBaseManager) valid_and_prepare_command_arguments(cmd_descriptor *CommandDescriptor, parameters_map map[string][]string) ([]interface{}, error) {
