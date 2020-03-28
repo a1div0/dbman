@@ -323,7 +323,7 @@ func ResultToJson(rows *sql.Rows) ([]byte, error) {
 	}
 
     if len(objects) == 0 {
-        return []byte("{}"), nil
+        return []byte("[]"), nil
     }
 
     //data, err := json.MarshalIndent(objects, "\t", "")
